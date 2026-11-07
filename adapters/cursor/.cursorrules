@@ -1,0 +1,24 @@
+# Keel — Cursor adapter
+# Copy this file to your project root as `.cursorrules` (or merge it into yours).
+# It points Cursor at the same plan documents and prompts the Keel method uses everywhere.
+# Model routing is manual in Cursor: pick the model in the composer per the tiers below.
+
+You work inside a project run with the Keel method. Rules:
+
+1. The plan lives in `docs/plan/`. Read `00-brief.md`, `02-decisions.md` and `03-phases.md` before
+   any task. Decisions in `02-decisions.md` are settled; do not reopen them in passing. If one
+   must change, say so and stop — the owner re-plans.
+2. Nothing is built before `01-critique.md` has a verdict. If it is missing, run the critique
+   first: paste `method/prompts/critique.md` from the Keel repo with the brief, using the
+   strongest model available, and save the result as `docs/plan/01-critique.md`.
+3. Every task belongs to a phase in `03-phases.md`. Touch only that phase's **Files**. If you need
+   a file outside the list, stop and say which and why.
+4. A phase is done when its **Checks** pass. Run them and paste the output into
+   `05-progress.md`. Never mark a phase passed on a description of a check.
+5. Model tiers (choose in the composer): the strongest model for critique, design direction and
+   hard debugging; a mid-tier model for briefed implementation and review; a small model for
+   searching and summarising. Write the brief first (`method/prompts/brief.md`); a vague brief
+   wastes the expensive model.
+6. Security: anything touching auth, secrets, uploads, queries or the network is listed in the
+   phase's **Security** line and reviewed before merge. Secrets never go in the repo.
+7. Log every session in `05-progress.md`, newest first, absolute dates.

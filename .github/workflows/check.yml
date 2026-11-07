@@ -1,0 +1,33 @@
+name: check
+on:
+  push:
+  pull_request:
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Manifests are valid JSON
+        run: |
+          for f in .claude-plugin/marketplace.json plugins/keel/.claude-plugin/plugin.json plugins/keel/hooks/hooks.json; do
+            node -e "JSON.parse(require('fs').readFileSync('$f','utf8')); console.log('ok', '$f')"
+          done
+      - name: Hook denies a model-less Agent call
+        run: |
+          set +e
+          echo '{"tool_name":"Agent","tool_input":{"prompt":"x"}}' | node plugins/keel/scripts/require-model.mjs
+          [ $? -eq 2 ] || { echo "expected exit 2"; exit 1; }
+          echo '{"tool_name":"Agent","tool_input":{"prompt":"x","model":"sonnet"}}' | node plugins/keel/scripts/require-model.mjs || exit 1
+          echo '{"tool_name":"Agent","tool_input":{"prompt":"x","subagent_type":"keel:builder"}}' | node plugins/keel/scripts/require-model.mjs || exit 1
+          echo '{"tool_name":"Agent","tool_input":{"prompt":"x","subagent_type":"fork"}}' | node plugins/keel/scripts/require-model.mjs || exit 1
+          echo 'garbage' | node plugins/keel/scripts/require-model.mjs || exit 1
+      - name: Skills and agents have frontmatter
+        run: |
+          for f in plugins/keel/skills/*/SKILL.md plugins/keel/agents/*.md; do
+            head -1 "$f" | grep -q '^---$' || { echo "no frontmatter: $f"; exit 1; }
+            grep -q '^name:' "$f" || { echo "no name: $f"; exit 1; }
+            grep -q '^description:' "$f" || { echo "no description: $f"; exit 1; }
+          done

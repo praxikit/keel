@@ -1,0 +1,14 @@
+{
+  "name": "praxikit",
+  "owner": { "name": "praxikit", "url": "https://github.com/praxikit" },
+  "description": "praxikit — practical kits for building with AI agents.",
+  "plugins": [
+    {
+      "name": "keel",
+      "source": "./plugins/keel",
+      "description": "Critique-gated planning, phased builds with acceptance checks, model tiers, re-planning.",
+      "category": "productivity",
+      "tags": ["planning", "critique", "model-routing", "security"]
+    }
+  ]
+}

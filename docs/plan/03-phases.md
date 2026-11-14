@@ -9,7 +9,7 @@ Status: ⬜ not started · 🟨 in progress · ✅ passed (date) · ⛔ blocked 
 **Checks:** `claude plugin validate ./kits/keel/plugin` passes; CI green; `git log` still shows the three original commits; smoke test: `/plugin marketplace add praxikit/praxikit` then `/plugin install keel@praxikit`.
 **Security:** no secrets moved; confirm `.gitignore` before the first commit at the root.
 
-## Phase 1 — kit manifest, versioning, release ⬜
+## Phase 1 — kit manifest, versioning, release 🟨 (built 2026-11-14; release workflow awaiting first tag)
 **Goal:** every kit is described by `kit.json`; a change without a version bump fails CI; releases are tagged.
 **Files:** `schema/kit.schema.json`, `kits/*/kit.json`, `kits/*/CHANGELOG.md`, `scripts/check-kits.mjs`, `.github/workflows/{check,release}.yml`.
 **Checks:** a bad `kit.json` fails the script; editing a kit file without bumping `version` fails CI; a tag `keel-v0.1.1` creates a release.

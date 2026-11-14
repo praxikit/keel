@@ -2,31 +2,49 @@ name: check
 on:
   push:
   pull_request:
+permissions:
+  contents: read
 jobs:
   check:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: 22
       - name: Manifests are valid JSON
         run: |
-          for f in .claude-plugin/marketplace.json kits/keel/plugin/.claude-plugin/plugin.json kits/keel/plugin/hooks/hooks.json; do
-            node -e "JSON.parse(require('fs').readFileSync('$f','utf8')); console.log('ok', '$f')"
+          for f in .claude-plugin/marketplace.json schema/kit.schema.json kits/*/kit.json kits/*/plugin/.claude-plugin/plugin.json kits/*/plugin/hooks/hooks.json; do
+            node -e "JSON.parse(require('fs').readFileSync(process.argv[1],'utf8')); console.log('ok', process.argv[1])" "$f"
           done
-      - name: Hook denies a model-less Agent call
+      - name: Kits are valid
+        run: node scripts/check-kits.mjs
+      - name: Version bumped when a kit's shipped files changed
+        env:
+          BASE_PR: ${{ github.event.pull_request.base.sha }}
+          BASE_PUSH: ${{ github.event.before }}
         run: |
+          BASE="${BASE_PR:-$BASE_PUSH}"
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+            echo "no base commit; skipping"; exit 0
+          fi
+          node scripts/check-kits.mjs --base "$BASE"
+      - name: Keel hook denies a model-less Agent call
+        run: |
+          H=kits/keel/plugin/scripts/require-model.mjs
           set +e
-          echo '{"tool_name":"Agent","tool_input":{"prompt":"x"}}' | node kits/keel/plugin/scripts/require-model.mjs
+          echo '{"tool_name":"Agent","tool_input":{"prompt":"x"}}' | node $H
           [ $? -eq 2 ] || { echo "expected exit 2"; exit 1; }
-          echo '{"tool_name":"Agent","tool_input":{"prompt":"x","model":"sonnet"}}' | node kits/keel/plugin/scripts/require-model.mjs || exit 1
-          echo '{"tool_name":"Agent","tool_input":{"prompt":"x","subagent_type":"keel:builder"}}' | node kits/keel/plugin/scripts/require-model.mjs || exit 1
-          echo '{"tool_name":"Agent","tool_input":{"prompt":"x","subagent_type":"fork"}}' | node kits/keel/plugin/scripts/require-model.mjs || exit 1
-          echo 'garbage' | node kits/keel/plugin/scripts/require-model.mjs || exit 1
+          set -e
+          echo '{"tool_name":"Agent","tool_input":{"prompt":"x","model":"sonnet"}}' | node $H
+          echo '{"tool_name":"Agent","tool_input":{"prompt":"x","subagent_type":"keel:builder"}}' | node $H
+          echo '{"tool_name":"Agent","tool_input":{"prompt":"x","subagent_type":"fork"}}' | node $H
+          echo 'garbage' | node $H
       - name: Skills and agents have frontmatter
         run: |
-          for f in kits/keel/plugin/skills/*/SKILL.md kits/keel/plugin/agents/*.md; do
+          for f in kits/*/plugin/skills/*/SKILL.md kits/*/plugin/agents/*.md; do
             head -1 "$f" | grep -q '^---$' || { echo "no frontmatter: $f"; exit 1; }
             grep -q '^name:' "$f" || { echo "no name: $f"; exit 1; }
             grep -q '^description:' "$f" || { echo "no description: $f"; exit 1; }

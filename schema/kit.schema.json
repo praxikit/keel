@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "praxikit kit manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["name", "kind", "collections", "tags", "version", "promise", "install", "limits"],
+  "properties": {
+    "name": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$", "description": "Same as the folder name under kits/." },
+    "kind": { "enum": ["plugin", "skill", "agent", "hook", "mcp", "template", "adapter"] },
+    "collections": {
+      "type": "array", "minItems": 1,
+      "items": { "enum": ["Planning", "Build and delegate", "Quality and security", "Design and 3D", "Data and live sources", "Adapters"] }
+    },
+    "tags": { "type": "array", "items": { "type": "string", "pattern": "^[a-z0-9-]+$" } },
+    "version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$", "description": "SemVer. Must match plugin.json for plugin kits and have a heading in CHANGELOG.md." },
+    "promise": { "type": "string", "maxLength": 140, "description": "One plain sentence. No hype." },
+    "install": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "Commands, one per line, as a user would type them." },
+    "limits": { "type": "array", "minItems": 1, "items": { "type": "string" }, "description": "Honest limits, shown on the kit page." }
+  }
+}

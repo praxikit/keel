@@ -1,0 +1,38 @@
+name: release
+# Push a tag like keel-v0.1.1. The tag must match kits/keel/kit.json; the release notes come from the CHANGELOG.
+on:
+  push:
+    tags: ["*-v[0-9]*.[0-9]*.[0-9]*"]
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Tag matches the kit version
+        id: kit
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          node scripts/check-kits.mjs
+          node -e '
+            const tag = process.env.TAG;
+            const m = /^([a-z][a-z0-9-]*)-v(\d+\.\d+\.\d+)$/.exec(tag);
+            if (!m) { console.error("bad tag", tag); process.exit(1); }
+            const v = JSON.parse(require("fs").readFileSync(`kits/${m[1]}/kit.json`, "utf8")).version;
+            if (v !== m[2]) { console.error(`tag ${tag} != kit.json version ${v}`); process.exit(1); }
+            const log = require("fs").readFileSync(`kits/${m[1]}/CHANGELOG.md`, "utf8");
+            const start = log.search(new RegExp(`^## ${m[2].replaceAll(".", "\\.")}( |$)`, "m"));
+            const rest = log.slice(start).split("\n").slice(1).join("\n");
+            const end = rest.search(/^## /m);
+            require("fs").writeFileSync("notes.md", (end > -1 ? rest.slice(0, end) : rest).trim() + "\n");
+          '
+      - name: Create release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+        run: gh release create "$TAG" --title "$TAG" --notes-file notes.md --verify-tag

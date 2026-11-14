@@ -35,5 +35,5 @@ a project needs a paid human for security.
 ## Rules for working here
 - Free tools only. No secrets in the repo.
 - Keep every skill, agent and hook small enough to read in one sitting; prefer deleting to adding.
-- Bump `version` in `plugins/keel/.claude-plugin/plugin.json` on every release, or installed copies will not update.
+- Bump `version` in `kits/keel/plugin/.claude-plugin/plugin.json` on every release, or installed copies will not update.
 - Keel is one kit in the **praxikit** family; see the workspace overview in the folder above this repo.

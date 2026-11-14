@@ -10,7 +10,7 @@ Argue against the thing in front of you before it is built. Input is whatever th
 
 1. Gather the material. If `docs/plan/00-brief.md` exists, include it and `02-decisions.md`.
    For a PR, include the diff summary and the phase it claims to belong to.
-2. Launch the `keel:critic` agent with `${CLAUDE_PLUGIN_ROOT}/../../method/prompts/critique.md`
+2. Launch the `keel:critic` agent with `${CLAUDE_PLUGIN_ROOT}/method/prompts/critique.md`
    and the material. If the user asked for a quick pass, tell the critic to answer questions 1, 3,
    6, 7 and the verdict only.
 3. If `docs/plan/01-critique.md` exists, append the new round under a dated heading (rounds are

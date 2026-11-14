@@ -5,7 +5,7 @@
   "plugins": [
     {
       "name": "keel",
-      "source": "./plugins/keel",
+      "source": "./kits/keel/plugin",
       "description": "Critique-gated planning, phased builds with acceptance checks, model tiers, re-planning.",
       "category": "productivity",
       "tags": ["planning", "critique", "model-routing", "security"]

@@ -1,44 +1,25 @@
-# Brief — Keel
+# Brief — praxikit monorepo and catalog
 
-**Date:** 2026-11-07 · **Owner:** Ratul Roy (praxikit)
+Date: 2026-11-14 · Owner: Ratul Roy
 
 ## What
-A method and a toolkit for building software with AI agents that stays on course: a written plan
-at the project root, a critique gate that argues against the plan before any code, phases with
-acceptance checks, model tiers so cheap models do the scoped work and expensive ones do the
-judgment, a re-plan path for when the idea changes, and a security track that is honest about
-what it is. Distributed as a Claude Code plugin from this repo, with the method and prompts usable
-by any agent (Cursor, Codex, ChatGPT) through adapters.
+Turn the praxikit workspace into one GitHub repo (`praxikit/praxikit`) that holds every kit Ratul builds, a
+versioned marketplace, and a static catalog page that lists them by category. Improve Keel (v0.2) inside it.
 
 ## Who
-- Ratul, on every project from now on (first: the portfolio platform, then a trading journal).
-- Other developers who want the same discipline without reinventing it.
-
-## Why now
-Ratul's portfolio work runs on the most expensive model for everything, including CSS. The split
-(strong model for direction and debugging, mid model for briefed implementation) was agreed but
-has no tooling. Planning conversations happen in chat and are lost. Ideas change mid-build and the
-docs do not follow.
+- Developers who want to install a kit with one line and get updates when it improves.
+- Ratul, who wants one place to publish, version and show his work.
 
 ## Done looks like
-- `/keel:plan` in an empty repo produces a filled `docs/plan/` with a critic's verdict in under 15 minutes of the owner's time.
-- `/keel:delegate` refuses to launch without a complete brief; a Builder task on Sonnet finishes in one pass on a well-briefed CSS/data task.
-- `/keel:verify` marks a phase passed only with pasted check output.
-- `/keel:replan` re-runs the gate on a change and edits (not appends to) decisions and phases.
-- An `Agent` call without a model is refused by the hook.
-- A Cursor project can follow the same method with the adapter file and the prompts.
-- Installable with two slash commands from GitHub.
+1. One repo `praxikit/praxikit`; `/plugin marketplace add praxikit/praxikit` and `/plugin install keel@praxikit` work.
+2. Every kit has a `kit.json` (name, kind, tags, version, promise, install line) validated in CI.
+3. A version bump is enforced: kit files changed without a `version` change fails CI.
+4. A catalog site on GitHub Pages, generated from the manifests, with categories, a page per kit and a
+   separate "Recommended" section for things Ratul uses but did not make (clearly labelled external).
+5. Keel v0.2: drift hook, security skill, configurable tiers, install smoke test recorded.
 
 ## Constraints
-- Free: GitHub, Claude Code plugin mechanism, no hosted service, no API keys needed.
-- Must not depend on any third-party routing service or proxy.
-- Honest about limits: no "no hacker can get in"; automatic routing only in Claude Code.
+Free tools only. No secrets. Static site, no framework, no runtime server. Calm, factual tone. Real apps stay in `royal-programmer`.
 
-## Non-goals
-- A task classifier that calls a model to decide which model to use (costs more than it saves).
-- Rebuilding planning skills that already exist in the user's install (make-plan, do, founder board); Keel's edge is the critique gate, the security track, the tiers and portability.
-- A hosted dashboard, accounts, telemetry.
-
-## Open questions
-- Exact Claude Code plugin manifest fields and hook JSON (verify against docs before v1 ships).
-- Whether a `/keel:security` skill (scanners in CI, pre-launch review) belongs in v1 or v2.
+## Non-goals (for now)
+A `praxikit` CLI; community or paid listings; a custom domain; analytics.

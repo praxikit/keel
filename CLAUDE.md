@@ -1,8 +1,7 @@
-# Keel
+# praxikit
 
-Read `docs/why-keel.md` first: why this exists, the method and the roadmap. Then `README.md` and `method/METHOD.md`.
+This folder is the `praxikit/praxikit` monorepo (one git repo). Read `PRAXIKIT.md` first, then `docs/plan/` (the plan for the monorepo and catalog), then the kit you are working on (`kits/keel/docs/why-keel.md` for Keel).
 
-- This repo is both the Keel plugin (`plugins/keel`) and the **praxikit marketplace** (`.claude-plugin/marketplace.json`).
-- Bump `version` in the plugin manifest on every release.
-- Never commit secrets. Commit trailer: `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`.
-- Git identity for this repo is local (Gmail address); do not change the global one.
+- Org `praxikit` is for reusable kits only (skills, plugins, MCP configs, adapters, templates). Real apps go in `royal-programmer`.
+- Free tools only. No secrets. Bump a plugin's `version` on every release.
+- Commit trailer: `Co-Authored-By: Claude Sonnet 5.5 <noreply@anthropic.com>`. Local git identity is the Gmail address; never change the global one.

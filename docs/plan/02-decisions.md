@@ -1,21 +1,18 @@
-# Decisions — Keel
+# Decisions — praxikit
 
-| # | Date | Decision | Why | Alternatives rejected | Tier / cost |
-|---|---|---|---|---|---|
-| 1 | 2026-11-07 | Keel is its own repo under the `praxikit` org, separate from the portfolio | the owner's personal repos stay his own work; the org collects tools | a folder in the portfolio repo | free |
-| 2 | 2026-11-07 | Method and prompts are plain markdown, usable by any agent; automation is a Claude Code plugin | portability where it is possible, automation where it is | a Node CLI; a hosted service | free |
-| 3 | 2026-11-07 | No model classifier | the lead knows what is hard; a classifier call costs more than it saves | donimas/ai-routing's `router.py` | — |
-| 4 | 2026-11-07 | The critique gate runs even when the owner asks to skip it (short form) | the gate is the method | optional gate | — |
-| 5 | 2026-11-07 | Security track = threat model + free scanners + pre-launch review; a human pentest is a named paid step, never promised by the tool | honesty; liability | "no hacker gets in" | free scanners |
-| 6 | 2026-11-07 | Drift detection is v2, as a once-per-session warning hook; v1 uses `git diff --stat` in `/keel:verify` | interruptions; Claude-Code-only | per-edit blocking | — |
-| 7 | 2026-11-07 | Reuse installed phased-execution skills rather than rebuild them | avoid duplicate tooling | a `/keel:do` | — |
-| 8 | 2026-11-07 | Tiers: Lead/Critic = strongest (Fable or Opus); Builder/Reviewer = Sonnet; Scout = Haiku; model aliases in agent frontmatter so they track the current generation | predictable cost; no hard-coded model IDs | pinned IDs | — |
-
-## Stack
-
-| Layer | Choice | Tier | Limit to watch |
+| # | Decision | Why | Rejected |
 |---|---|---|---|
-| Hosting | GitHub public repo | free | none |
-| Distribution | Claude Code plugin marketplace (this repo) | free | manifest schema changes |
-| Runtime | Node for the hook script (present wherever Claude Code is) | free | none |
-| CI | GitHub Actions: lint JSON, shellcheck-equivalent for scripts | free | 2 000 min/month (far above need) |
+| 1 | One repo `praxikit/praxikit`, made by renaming `praxikit/keel` (keeps history, stars, redirects) | Single install line; catalog reads one place | New empty repo + copy (loses history) |
+| 2 | Layout: `kits/<name>/{kit.json, README.md, CHANGELOG.md, ...}`; plugin kits keep their plugin in `kits/<name>/plugin/`; marketplace at root `.claude-plugin/marketplace.json` | A kit is any kind of thing, not only a plugin | `plugins/` only (cannot hold MCP configs, templates) |
+| 3 | `kit.json` fields: name, kind, collections[], tags[], version, promise, install, repo path, limits | One source of truth the site and CI both read | Hand-written catalog data |
+| 4 | Kinds: plugin, skill, agent, hook, mcp, template, adapter | Matches how people search | Free-text categories |
+| 5 | SemVer per kit; tags `<kit>-vX.Y.Z`; CHANGELOG per kit; CI fails if kit files change without a version bump | Plugin updates only reach users when `version` changes | Trust to remember |
+| 6 | Site: Node script -> static HTML in `site/dist`, deployed by GitHub Actions to Pages. Relative links so a custom domain later needs no change | Free, no dependencies, portable | Next/Astro/etc. |
+| 7 | URL now: `praxikit.github.io/praxikit/`. Later: custom domain via a `CNAME` file and DNS (Pages still hosts it) | `praxikit.github.io` at the root needs a separate repo of that exact name | Separate `praxikit.github.io` repo + PAT now |
+| 8 | Two lists on the site: **Built by praxikit** and **Recommended** (external, attributed, with a one-line why, dated, link-checked, no affiliate links) | Honest about what is ours | Mixing them |
+| 9 | No CLI in v1. Plugins update via `/plugin marketplace update praxikit`. The site publishes `versions.json` so a CLI or script can be added later | Marketplace covers the main case | Build installer now |
+| 10 | Commit trailer `Co-Authored-By: Claude Sonnet 5.5` stays | Owner said keep or remove; kept for honesty | Remove |
+| 11 | Git identity: local `ratul.arya.roy@gmail.com`; gh account `royal-programmer` (org admin on praxikit, scopes repo/workflow/read:org). Global git stays on work address | Owner instruction | Changing global config |
+
+## Tiers
+Lead: plan, schema, review. Builder: generator, CI, skills from tight briefs. Scout: Pages limits, link checks. Reviewer: second read of the generator (HTML escaping).

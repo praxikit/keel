@@ -13,7 +13,7 @@ The saving in model routing is the brief, not the routing. This skill refuses to
    implementation with known files. Reviewer for a second read of a diff. If the task needs
    design judgment, visual judgment, or a root cause nobody has found yet, do not delegate: say
    so and do it as the Lead.
-2. **Write the brief** from `${CLAUDE_PLUGIN_ROOT}/../../method/prompts/brief.md`. Every section
+2. **Write the brief** from `${CLAUDE_PLUGIN_ROOT}/method/prompts/brief.md`. Every section
    filled: Goal, Context, Files (exact paths), Steps, Acceptance checks (commands), Do not, Report
    back. Name the phase from `docs/plan/03-phases.md` and keep the Files inside that phase's list.
    If you cannot fill a section, you do not understand the task; find out first (a Scout can).

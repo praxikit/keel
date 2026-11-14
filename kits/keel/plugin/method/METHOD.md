@@ -7,11 +7,11 @@ through the same gate the moment the idea changes.**
 
 It is tool-agnostic. The method and the prompts in this folder work with Claude Code, Cursor,
 Codex, ChatGPT or a person with a notebook. Only the automation layer (the plugin in
-`plugins/keel`) is specific to Claude Code.
+`plugin/`) is specific to Claude Code.
 
 ## The six documents
 
-Every project carries a `docs/plan/` folder at its root. Templates are in `templates/docs/plan/`.
+Every project carries a `docs/plan/` folder at its root. Templates are in `plugin/templates/docs/plan/`.
 
 | File | Question it answers | Written |
 |---|---|---|
@@ -97,7 +97,7 @@ turn in `05-progress.md`. Re-planning is cheap. Building the wrong thing is not.
 
 ## Using the method without the plugin
 
-1. Copy `templates/docs/plan/` into your project as `docs/plan/`.
+1. Copy `plugin/templates/docs/plan/` into your project as `docs/plan/`.
 2. Fill `00-brief.md`.
 3. Paste `prompts/critique.md` plus the brief into the strongest model you have. Save the answer as
    `01-critique.md`. Decide. Write `02-decisions.md`.

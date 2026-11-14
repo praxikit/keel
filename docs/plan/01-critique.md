@@ -1,75 +1,18 @@
-# Critique — Keel
+# Critique — round 1 (2026-11-14)
 
-**Date:** 2026-11-07 · **Critic:** Claude Fable 5.1 · **Round:** 1
-(written in the owner's planning conversation before this repo existed; recorded here verbatim in substance)
+Verdict: **build the cut-down version.** Monorepo and generated catalog are right; defer the CLI and anything with other people's content.
 
-## 1. Is it needed?
-Partly. The *method* is needed: decisions are being lost in chat and the expensive model is doing
-cheap work. The *tooling* is optional: the method works with copied templates and pasted prompts.
-If nothing is built, the owner keeps paying top-tier prices for CSS and keeps re-deciding things.
+1. **Needed?** Yes for the monorepo (install line and catalog both depend on it). The catalog is needed only once there are 2+ kits; build it now but keep it small, because it is also the shop window.
+2. **Exists?** Claude Code marketplaces already give install and versioning for plugins. The catalog adds discovery and the non-plugin kinds (MCP configs, templates, adapters). Do not rebuild an installer.
+3. **Simplest version:** `kit.json` per kit, one Node script that writes static HTML, one Pages workflow. No framework, no build dependencies beyond Node.
+4. **Over-engineering risks:** a CLI (marketplace already updates plugins); a database; per-kit sites; a schema library. Skip all.
+5. **What breaks:**
+   - Moving files changes marketplace `source` paths; a wrong path silently breaks installs. Needs the smoke test.
+   - Renaming `keel` -> `praxikit`: GitHub redirects the web and git URLs, but anyone who added `praxikit/keel` as a marketplace should be told once.
+   - A bumped `version` that nobody tagged means installed copies update with no changelog. CI must check both.
+6. **Cost by tier:** all free (Pages, Actions within the free minutes). Lead for schema and plan; Builder for the generator and CI from a tight brief; Scout to check Pages limits.
+7. **Attack surface:** the generator renders manifest text into HTML, so it must escape everything. The Recommended list is external links, so it needs `rel="noopener noreferrer"`, link checking, and no affiliate links. Community submissions (later) are the real risk: a listed malicious plugin damages trust, so they stay out of v1.
+8. **Counter-argument:** one repo couples release cadence and noise (a docs change in one kit triggers CI for all). Mitigation: CI runs per changed kit folder; tags are per kit (`keel-v0.2.0`). Big kits may still move to their own repo and be referenced by GitHub source.
 
-## 2. Does it already exist?
-
-| Option | Covers | Leaves undone | Licence / cost |
-|---|---|---|---|
-| Claude Code sub-agents with `model` in frontmatter | routing | brief discipline, planning docs, critique | built in, free |
-| `make-plan` / `do` skills (installed) | phased plans, execution by sub-agents | the critique gate, security, portability | free |
-| founder-board style skills | adversarial review for business ideas | software plans | free |
-| donimas/ai-routing | config templates, 4 pinned agents, a model-required hook, a Haiku classifier | planning, docs, portability; classifier costs more than it saves | MIT, free; 6 stars |
-
-Verdict on this question: build the gate, the docs and the portability; borrow the hook idea;
-reuse rather than rebuild phased execution.
-
-## 3. The simplest version
-In: six plan templates, the critique prompt, the brief prompt, the phases prompt, one plugin with
-five skills and four agents, one hook, two adapter files, a README.
-Out (v1): drift hook, security scanners wired into CI, a `/keel:security` skill, a published
-marketplace listing beyond this repo, any UI.
-
-## 4. Over-engineering
-
-| Item | Keep / cut / defer | Why |
-|---|---|---|
-| Automatic drift detection on every edit | defer to v2 | interruptions; only possible in Claude Code; a `git diff --stat` in `/keel:verify` covers 80% |
-| A "testing module" | cut | phases declare check commands; the project's own tools run them |
-| Full pentest promise | cut | not achievable by a tool; replaced by threat model + free scanners + honest "pay a human when it warrants" |
-| Model classifier | cut | the lead already knows what is hard |
-| Cross-tool automatic routing | cut | not possible outside Claude Code; the method and prompts are the portable part |
-| Per-project copies of agents | defer | the plugin covers every project; copy only when a repo needs its own |
-
-## 5. What breaks
-- Plugin format drift: Claude Code's manifest and hook schemas change; pin to the documented
-  shape and keep a smoke test (install from the repo, run `/keel:plan` in a temp dir).
-- The critique gate becomes theatre if the critic runs on a weak model or the owner skips it;
-  the `plan` skill runs a short form even when asked to skip.
-- Briefs rot: a builder told to touch files outside the phase list; `/keel:verify` reports drift.
-- The hook blocks legitimate `fork` or named-agent launches if written too strictly; allow `fork`
-  and any `keel:*` agent.
-
-## 6. Cost
-
-| Service | Free tier limit | Paid line | At launch | At 10× | Pauses / expires? |
-|---|---|---|---|---|---|
-| GitHub (public repo, org) | unlimited public repos | none needed | $0 | $0 | no |
-| Claude Code plugin mechanism | included | none | $0 | $0 | no |
-| Model usage | n/a | per token | depends on the owner's plan | | the saving is the point |
-
-## 7. Attack surface
-- The plugin runs a hook script locally on every `Agent` call: it must read stdin only, never the
-  network, never write outside its own output. Review it like any script that runs on your machine.
-- Prompts and templates are text; the risk is prompt injection *from a repo's own docs* into the
-  critic. Mitigation: the critic treats plan files as data to critique, not instructions.
-- No secrets, no network, no telemetry.
-
-## 8. Direction
-The counter-argument: skip the plugin, ship only `method/` and `templates/`, and tell people to
-paste. Cheaper, fully portable, no format risk. Rejected by the owner because the brief discipline
-and the model-required hook are where the money is saved, and those need automation.
-
-## Verdict
-**BUILD THE CUT-DOWN VERSION** — v1 as listed in section 3. v2: drift hook, security track
-tooling, Cursor/Codex adapters tested on a real project. v3: publish.
-
-## Edits the plan needs
-- `03-phases.md`: three phases as above; v1 checks must include an install-from-GitHub smoke test.
-- `04-security.md`: the hook script's review is the only real item; the rest is "not applicable".
+## Owner decisions (2026-11-14)
+- Monorepo: yes. Recommended section: yes. github.io first, custom domain later. CLI: later (recommended). Sponsor or community listings: discuss; not in v1.

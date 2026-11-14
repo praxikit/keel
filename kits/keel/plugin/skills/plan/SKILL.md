@@ -5,20 +5,20 @@ description: Start or restart a project plan the Keel way — brief, critique ga
 
 # /keel:plan
 
-You are running the Keel planning phase. Read `${CLAUDE_PLUGIN_ROOT}/../../method/METHOD.md` once
+You are running the Keel planning phase. Read `${CLAUDE_PLUGIN_ROOT}/method/METHOD.md` once
 if you have not this session. The output is the `docs/plan/` folder at the project root, filled.
 Nothing is built in this skill.
 
 ## Steps
 
 1. **Find or create the folder.** If `docs/plan/` does not exist, copy
-   `${CLAUDE_PLUGIN_ROOT}/../../templates/docs/plan/` there. If it exists, read all six files
+   `${CLAUDE_PLUGIN_ROOT}/templates/docs/plan/` there. If it exists, read all six files
    first; this is a re-plan, and you edit rather than overwrite.
 2. **Brief.** Fill `00-brief.md` with the user. Ask only what the template needs and you cannot
    infer from the request or the repo. Short answers are fine; empty sections are not. Write the
    file before going on.
 3. **Critique gate.** Launch the `keel:critic` agent with the critique prompt
-   (`${CLAUDE_PLUGIN_ROOT}/../../method/prompts/critique.md`) and the brief (plus decisions and
+   (`${CLAUDE_PLUGIN_ROOT}/method/prompts/critique.md`) and the brief (plus decisions and
    phases if they exist). Save its answer verbatim as `01-critique.md` with today's date, the
    model, and the round number. Then put the verdict and the edits in front of the user in your
    own words, lead with the verdict, and **stop for their decision**. Do not soften the critique.
@@ -26,7 +26,7 @@ Nothing is built in this skill.
 4. **Decisions.** Record what the user decided and why in `02-decisions.md`, one row per
    decision, including the ones where they overruled the critic. Fill the stack table with the
    tier and the limit to watch for every service.
-5. **Phases.** Run the phases prompt (`${CLAUDE_PLUGIN_ROOT}/../../method/prompts/phases.md`) with
+5. **Phases.** Run the phases prompt (`${CLAUDE_PLUGIN_ROOT}/method/prompts/phases.md`) with
    the brief, critique and decisions — yourself, or via `keel:critic` for a large project. Write
    `03-phases.md`. Every phase has Goal, Files, Tasks with tiers, at least two Checks that are
    commands or precise observations, a Security line and Depends on. Split any phase over a day.
